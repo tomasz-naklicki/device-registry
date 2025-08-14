@@ -7,6 +7,6 @@ class CreateBlacklists < ActiveRecord::Migration[7.1]
       t.timestamps
     end
 
-    add_index :device_blacklists, [:user_id, :device_id], unique: true
+    add_index :blacklists, [:user_id, :device_id], unique: true
   end
 end
