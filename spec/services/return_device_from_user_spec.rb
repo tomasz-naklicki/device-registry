@@ -1,36 +1,45 @@
 # frozen_string_literal: true
-require 'rspec'
-require 'rails_helper'
+
+  require 'rails_helper'
 
 RSpec.describe ReturnDeviceFromUser do
   subject(:return_device) do
     described_class.new(
-      requesting_user: user,
-      serial_number: serial_number
+      user: user,
+      serial_number: serial_number,
+      from_user: user.id
     ).call
   end
-
+  
   let(:serial_number) { '123456' }
   let(:user) { create(:user) }
-  let(:device) { create(:device, serial_number: serial_number, owner_id: owner_id) }
-
-  before do
-    device # ensure device exists
-  end
-
+  
+  
   context 'when user owns the device' do
-    let(:owner_id) {user.id}
-
+    let!(:device) { create(:device, serial_number: serial_number, owner: user) }
+    
     it 'removes ownership from the device' do
       expect { return_device } 
-        .to change { device.reload.owner_id }
-        .from(user.id)
-        .to(nil)
+      .to change { device.reload.owner_id }
+      .from(user.id)
+      .to(nil)
+    end
+    context 'when the user owns multiple devices' do
+      let(:serial_number) { '111111' }
+      let(:owner_id) { user.id }  
+      let!(:other_device) { create(:device, serial_number: '222222', owner_id: user.id) }
+      it 'only removes the correct device' do
+        return_device
+        expect(device.reload.owner_id).to be_nil
+        expect(other_device.reload.owner_id).to eq(user.id)
+      end
     end
   end
+  
 
   context 'when the user does not own the device' do
-    let(:owner_id) { create(:user).id }
+    let(:other_user) { create(:user) }
+    let!(:device) { create(:device, serial_number: serial_number, owner: other_user) }
 
     it 'does not allow to return' do
       expect { return_device }
@@ -39,34 +48,24 @@ RSpec.describe ReturnDeviceFromUser do
   end
 
   context 'when the device does not exist' do
-    let(:serial_number) { 'nonexistent' }
-    let(:owner_id) { nil }
+    let(:device) {nil}
 
     it 'does not allow to return' do
+
       expect { return_device }
-        .to raise_error(ReturningError::DeviceDoesNotExist)
+        .to raise_error(ReturningError::NotFound)
     end
   end
 
   context 'when the device has no owner' do
-    let(:owner_id) { nil }
-
+    let(:device) { create(:device, serial_number: serial_number, owner: nil) }
     it 'does not allow to return' do
+      expect(device.owner).to eq(nil) 
       expect { return_device }
-        .to raise_error(ReturningError::DeviceHasNoOwner)
+        .to raise_error(ReturningError::NoOwner)
     end
   end
 
-  context 'when the user owns multiple devices' do
-    let(:serial_number) { '111111' }
-    let(:owner_id) { user.id }
-    let!(:other_device) { create(:device, serial_number: '222222', owner_id: user.id) }
-    it 'only removes the correct device' do
-      return_device
-      expect(device.reload.owner_id).to be_nil
-      expect(other_device.reload.owner_id).to eq(user.id)
-    end
-  end
 
 
 
