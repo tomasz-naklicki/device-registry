@@ -43,7 +43,7 @@ RSpec.describe ReturnDeviceFromUser do
 
     it 'does not allow to return' do
       expect { return_device }
-        .to raise_error(ReturningError::Unauthorized)
+        .to raise_error(RegistrationError::Unauthorized)
     end
   end
 
