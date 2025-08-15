@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe 'associations' do
-    it { should have_many(:api_keys).as(:bearer) }
+    it { should have_many(:api_keys) }
     it { should have_many(:devices).dependent(:nullify).with_foreign_key(:owner_id) }
     it { should have_many(:blacklists) }
     it { should have_many(:blacklisted_devices).class_name('Device').through(:blacklists) }
