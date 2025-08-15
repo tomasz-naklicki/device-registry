@@ -19,7 +19,7 @@ A simple Ruby on Rails application that manages device assignments between users
 1. **Clone the repository**
    ```bash
    git clone https://github.com/tomasz-naklicki/device-registry.git
-   cd device-assignment-app
+   cd device-registry
    ```
 2. **Install dependencies**
     ```bash
