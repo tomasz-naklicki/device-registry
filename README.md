@@ -1,24 +1,56 @@
-# README
+# Device Registry App
+A simple Ruby on Rails application that manages device assignments between users. In addition, the app includes a **basic authentication system**.
 
-Your task is to implement the part of the application that helps track devices assigned to users within an organization.
+## Table of Contents
+1. [Tech Stack](#tech-stack)  
+2. [Setup](#setup)  
+3. [Running the Application](#running-the-application)  
+4. [Running Tests](#running-tests)  
+5. [API Endpoints](#api-endpoints)  
+6. [Product Logic Summary](#product-logic-summary)
 
-For now, we have two ActiveRecord models: User and Device.
-User can have many devices; the device should be active only for one assigned user.
-There are 2 actions a User can take with the Device: assign the device to User or return the Device.
+## Tech Stack
+- **Ruby**: 3.2.3 
+- **Rails**: 7.1
+- **Database**: Sqlite3
+- **Authentication**: Simple session-based auth
 
-Here are the product requirements:
-- User can assign the device only to themself. 
-- User can't assign the device already assigned to another user.
-- Only the user who assigned the device can return it. 
-- If the user returned the device in the past, they can't ever re-assign the same device to themself.
+## Setup
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/tomasz-naklicki/device-registry.git
+   cd device-assignment-app
+   ```
+2. **Install dependencies**
+    ```bash
+    bundle install
+    ```
+3. **Setup database**
+    ```bash
+    sudo apt install sqlite3
+    bin/rails db:create
+    bin/rails db:migrate
+    rake db:test:prepare
+    ```
 
+## Running the Application
 
-TODO:
- - Clone this repo to your local machine - DON'T FORK IT.
- - Fix the config, so you can run the test suite properly.
- - Implement the code to make the tests pass for `AssignDeviceToUser` service.
- - Following the product requirements listed above, implement tests for returning the device and then implement the code to make them pass.
- - In case you are missing additional product requirements, use your best judgment. Have fun with it.
- - Refactor at will. Do you see something you don't like? Change it. It's your code. Remember to satisfy the outlined product requirements though.
- - Remember to document your progress using granular commits and meaningful commit messages.
- - Publish your code as a public repo using your Github account.
+```bash
+    rails server
+```
+The API endpoints are available at ```http://localhost:3000/api```.
+
+## Running Tests 
+```bash
+    rspec spec
+```
+
+## API Endpoints
+
+| Method | Endpoint       | Description               |
+|--------|----------------|---------------------------|
+| POST   | `/api/login`   | Authenticate user         |
+| DELETE | `/api/logout`  | Log out current user      |
+| POST   | `/api/signup`  | Create a new user         |
+| POST   | `/api/assign`  | Assign device to a user   |
+| POST   | `/api/unassign`| Return device from a user |
