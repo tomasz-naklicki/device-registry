@@ -50,7 +50,3 @@ RSpec.describe SessionsController, type: :controller do
   end
 end
 
-
-
-# token = request.headers['Authorization']&.split&.last
-#     api_key = ApiKey.find_by(token: token)
