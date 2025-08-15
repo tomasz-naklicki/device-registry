@@ -5,4 +5,13 @@ class Device < ApplicationRecord
   has_many :blacklisted_users, class_name: "User", through: :blacklists
 
   validates :serial_number, presence: true, uniqueness: true
+
+  def assigned?
+    owner_id.present?
+  end
+
+  def assigned_to_user?(user)
+    owner_id == user&.id
+  end
+  
 end

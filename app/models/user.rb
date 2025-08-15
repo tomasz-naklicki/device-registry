@@ -6,4 +6,8 @@ class User < ApplicationRecord
   has_many :blacklisted_devices, class_name: "Device", through: :blacklists
 
   has_secure_password
+
+  def owns_device?(device)
+    device.owner_id == id
+  end
 end
